@@ -1,23 +1,74 @@
 gsap.registerPlugin(ScrollTrigger);
+
+
+function lokomotiveJS(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  const locoScroll = new LocomotiveScroll({
+    el: document.querySelector("#main"),
+    smooth: true,
+
+    // for tablet smooth
+    tablet: { smooth: true },
+
+    // for mobile
+    smartphone: { smooth: true },
+  });
+  locoScroll.on("scroll", ScrollTrigger.update);
+
+  ScrollTrigger.scrollerProxy("#main", {
+    scrollTop(value) {
+      return arguments.length
+        ? locoScroll.scrollTo(value, 0, 0)
+        : locoScroll.scroll.instance.scroll.y;
+    },
+    getBoundingClientRect() {
+      return {
+        top: 0,
+        left: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+    },
+
+    // follwoing line is not required to work pinning on touch screen
+
+    /* pinType: document.querySelector("#main").style.transform
+    ? "transform"
+    : "fixed"*/
+  });
+
+  
+  // --- PURPLE/GREEN PANEL ---
+
+
+
+  ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+
+  ScrollTrigger.refresh();
+
+}
 function navbar_animation() {
   let menuIcon = document.querySelector(".menu_bar");
   let isopen = false;
   let navbartimeline = gsap.timeline({ paused: true });
 
-  gsap.to("nav .nav_part1 .inside",{
+  gsap.to("nav .nav_part1 .inside", {
     y: "-55%",
     scrollTrigger: {
       trigger: "#page1",
+      scroller: "#main",
       scrub: 1,
       start: "top -10%",
       end: "top -9%",
       // markers: true,
-    }
+    },
   });
   gsap.to(".hide_div ", {
     y: "-100%",
     scrollTrigger: {
       trigger: "#page1",
+      scroller: "#main",
       scrub: 1,
       start: "top -10%",
       end: "top -9%",
@@ -100,10 +151,10 @@ function navbar_animation() {
 
 function _3rdPAGE_scroll_anime(){
   gsap.to(".parent_text_content", {
-    y: 440,
+    y: 300,
     scrollTrigger: {
       trigger: ".page3_next_part",
-      // scroller: "body",
+      scroller: "#main",
       start: "top 74%", // when the top of the trigger hits the top of the viewport
       // end: "bottom 20%", 
       // markers: true,
@@ -132,6 +183,7 @@ function page4_animation() {
   });
 }
 
+lokomotiveJS();
 navbar_animation();
 _3rdPAGE_scroll_anime();
 page4_animation();
